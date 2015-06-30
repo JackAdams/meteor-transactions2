@@ -188,9 +188,9 @@ The production app is [Standbench](http://www.standbench.com), which provides on
 
 ~~0.6 Store removed documents in the transaction document itself and actually remove them from collections as a default behaviour (`softDelete:true` can be passed to set the deleted field instead)~~
 
-~~0.7 Implement [the mongo two-phase commit approach](http://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/) properly (see [issue #5](https://github.com/JackAdams/meteor-transactions/issues/5))~~
+~~0.7 Implement [the mongo two-phase commit approach](http://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/) properly (see [issue #5](https://github.com/JackAdams/meteor-transactions/issues/5)) and factor out undo/redo UI to a separate package~~
 
-0.8 More complete test coverage
+0.8 Add more complete test coverage
 
 0.9 Add/improve support for other/existing mongo operators  
 
