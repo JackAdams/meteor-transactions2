@@ -7,4 +7,5 @@
 meteor-platform
 sanjo:jasmine
 velocity:html-reporter
-babrahams:transactions
+babrahams:transactions2
+babrahams:undo-redo
