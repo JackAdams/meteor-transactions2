@@ -172,7 +172,7 @@ Note that each comment has to be removed independently. Transactions don't suppo
 
 17. By default, the package will look for any incomplete transactions on app startup and try to repair app state by completing them. This behaviour can be changed by setting `tx.selfRepairMode = 'rollback'` if you'd rather incomplete transactions be rolled back, or `tx.selfRepairMode = 'none'` if you want to handle app state repair manually. (Default is `tx.selfRepairMode = 'complete'`.) 
 
-    Note: to try a repair from `meteor shell`, use `tx._repairAllIncomplete(mode)` or, for individual transactions, `tx._repairIncomplete(transactionDoc, mode)` (where mode is `"complete"` or `"rollback"` and transactionDoc is a document from the `tx.Transactions` collection.
+    Note: to try a repair from `meteor shell`, use `tx._repairAllIncomplete(mode)` or, for individual transactions, `tx._repairIncomplete(transactionDoc, mode)` (where mode is `"complete"` or `"rollback"` and `transactionDoc` is a document from the `tx.Transactions` collection.
 
 #### In production
 
