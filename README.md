@@ -194,7 +194,7 @@ The production app is [Standbench](http://www.standbench.com), which provides on
 
 ~~0.7 Implement [the mongo two-phase commit approach](http://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/) properly (see [issue #5](https://github.com/JackAdams/meteor-transactions/issues/5)) and factor out undo/redo UI to a separate package~~
 
-0.8 Add more test coverage
+0.8 Add more test coverage and refactor code for better maintainability
 
 0.9 Add/improve support for other/existing mongo operators  
 
