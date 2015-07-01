@@ -30,8 +30,12 @@ describe('state after hardware failure', function () {
     // Now we make a couple of changes to the db to simulate failure after the insert
 	// but before the update
     // The state of the `foo` field should still be "initial"
+	// and there should be no transaction_id set
 	// and the transaction state should still be "pending"
 	// the state on the action that hasn't been completed should also be "pending", not "done"
+
+	tx.Transactions.update({_id: transaction_id}, {$set: {state: "pending", "items.1.state": "pending"}});
+	fooCollection.update({_id: insertedFooDoc._id}, {$set: {state: "initial"}});
 
   });
 
@@ -41,67 +45,39 @@ describe('state after hardware failure', function () {
   });
  
   it ('can be recovered by a rollback', function () {
-	// SETUP
-	// EXECUTE
-	tx.start('update foo');
-	fooCollection.update(
-	  {_id: insertedFooDoc._id},
-	  {
-		$pull: {
-		  foo: {
-			bar: 1
-		  }
-		}
-	  },
-	  {
-		tx: true
-	  });
-	tx.commit();
+	
+	// Perform the same rollback that would be performed on startup
+	
+	tx._repairAllIncomplete('rollback');
 	
 	// VERIFY
 	var recoveredFoo = fooCollection.findOne(
 	{_id: insertedFooDoc._id});
-	expect(_.contains(recoveredFoo.foo, {bar: 1})).toBe(false);
+	expect(recoveredFoo).toBeUndefined();
 	// Check transaction
-	var txDoc = tx.Transactions.findOne({_id: recoveredFoo.transaction_id});
-	expect(txDoc.items[0].inverse).toEqual(
-	  { command: '$addToSet', data: [ { key: 'foo', value: { json: '{"bar":1}' } } ] }
-	  );
+	var txDoc = tx.Transactions.findOne({_id: transaction_id});
+	expect(txDoc.items[0].state).toEqual("undone");
+	expect(txDoc.items[1].state).toEqual("pending");
+	expect(txDoc.state).toEqual("undone");
 	
   })
 
   it ('can be made consistent by completing unfinished transaction', function () {
-	// SETUP
-	tx.start('update foo');
-	fooCollection.update(
-	  {_id: insertedFooDoc._id},
-	  {
-		$pull: {
-		  foo: {
-			bar: 1
-		  }
-		}
-	  },
-	  {
-		tx: true
-	  });
-	tx.commit();
-
-	// EXECUTE
-	tx.undo();
-
-	 // VERIFY
-	var fooCursor = fooCollection.find(
-	{foo: {bar: 1}});
-	expect(fooCursor.count()).toBe(1);
-
-	// EXECUTE
-	tx.redo();
-
-	// VERIFY 
-	fooCursor = fooCollection.find(
-	  {foo: {bar: 1}});
-	expect(fooCursor.count()).toBe(0);
+	
+	// Perform the same completion of unfinished transaction that would be performed on startup
+	
+	tx._repairAllIncomplete('complete');
+	
+	// VERIFY
+	var recoveredFoo = fooCollection.findOne({_id: insertedFooDoc._id});
+	expect(recoveredFoo).toBeDefined();
+	expect(recoveredFoo.transaction_id).toEqual(transaction_id);
+	expect(recoveredFoo.state).toEqual("final");
+	// Check transaction
+	var txDoc = tx.Transactions.findOne({_id: transaction_id});
+	expect(txDoc.items[0].state).toEqual("done");
+	expect(txDoc.items[1].state).toEqual("done");
+	expect(txDoc.state).toEqual("done");
 	
   })
 })

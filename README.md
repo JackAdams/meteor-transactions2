@@ -147,7 +147,7 @@ Note that each comment has to be removed independently. Transactions don't suppo
 
 11. The default setting is `tx.softDelete = false`, meaning documents that are removed are taken out of their own collection and stored in a document in the `transactions` collection. This can default can be changed at run time by setting `tx.softDelete = true`. Or, for finer grained management, the `softDelete:true` option can be passed on individual `remove` calls. If `softDelete` is `true`, `deleted:<mongo ISO date object>` will be added to the removed document, and then this `deleted` field is `$unset` when the action is undone. This means that the `find` and `findOne` calls in your Meteor method calls and publications will need `,deleted:{$exists:false}` in the selector in order to keep deleted documents away from the client, if that's what you want. This is, admittedly, a pain having to handle the check on the `deleted` field yourself, but it's less prone to error than having a document gone from the database and sitting in a stale state in the `transactions` collection where it won't be updated by migrations, etc. For this reason, we recommend setting `tx.softDelete = true` and dealing with the pain.
 
-	__Note:__ When doing a remove on the client using a transaction with `softDelete` set to `false` and `{instant:true}`, only the _published_ fields of the document are stored for retrieval.  So if a document with only some of its fields published is removed on the client and then that is undone, there will be data loss (the unpublished fields will be gone from the db) which could cause your app to break or behave strangely, depending on how those fields were used.  To prevent this, there are three options:
+    __Note:__ When doing a remove on the client using a transaction with `softDelete` set to `false` and `{instant:true}`, only the _published_ fields of the document are stored for retrieval.  So if a document with only some of its fields published is removed on the client and then that is undone, there will be data loss (the unpublished fields will be gone from the db) which could cause your app to break or behave strangely, depending on how those fields were used.  To prevent this, there are three options:
 
 	-	use `softDelete:true` (then you'll have to change your selectors in `find` and `findOne` everywhere to include `,deleted:{$exists:false}`)
 	-	publish the whole document to the client
@@ -170,6 +170,10 @@ Note that each comment has to be removed independently. Transactions don't suppo
 	      // `this` will be the tx object 
         }
 
+17. By default, the package will look for any incomplete transactions on app startup and try to repair app state by completing them. This behaviour can be changed by setting `tx.selfRepairMode = 'rollback'` if you'd rather incomplete transactions be rolled back, or `tx.selfRepairMode = 'none'` if you want to handle app state repair manually. (Default is `tx.selfRepairMode = 'complete'`.) 
+
+    Note: to try a repair from `meteor shell`, use `tx._repairAllIncomplete(mode)` or, for individual transactions, `tx._repairIncomplete(transactionDoc, mode)` (where mode is `"complete"` or `"rollback"` and transactionDoc is a document from the `tx.Transactions` collection.
+
 #### In production
 
 We've been using the first iteration of this package (up to 0.6.x) [babrahams:transactions](https://atmospherejs.com/babrahams/transactions) in a complex production app for two years and it's never given us any trouble. That said, we have a fairly small user base and those users perform writes infrequently, so concurrent writes to the same document are unlikely. 0.7+ has not been so thoroughly battle-tested.
@@ -190,11 +194,11 @@ The production app is [Standbench](http://www.standbench.com), which provides on
 
 ~~0.7 Implement [the mongo two-phase commit approach](http://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/) properly (see [issue #5](https://github.com/JackAdams/meteor-transactions/issues/5)) and factor out undo/redo UI to a separate package~~
 
-0.8 Add more complete test coverage
+0.8 Add more test coverage
 
 0.9 Add/improve support for other/existing mongo operators  
 
-1.0 Security audit  
+1.0 Complete test coverage and security audit  
 
 _1.0+ Operational Transform_
 

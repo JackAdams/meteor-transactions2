@@ -32,10 +32,8 @@ Package.onTest(function(api) {
 	
   api.use('sanjo:jasmine@0.14.0');
   api.use('babrahams:transactions2');
-  // api.addFiles('tests/server/example-spec.js', 'server');
-  // api.addFiles('tests/client/example-spec.js', 'client');
-  api.addFiles('tests/package-spec.js');
-  api.addFiles('tests/unit-tests.js','server');
+  api.addFiles('tests/both/package-spec.js');
+  api.addFiles('tests/server/unit-tests.js','server');
   
   // run these with the velocity html reporter
   // from the package top level directory
