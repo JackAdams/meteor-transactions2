@@ -29,7 +29,7 @@ Package.onUse(function (api, where) {
 });
 
 Package.onTest(function(api) {
-	
+
   api.use('sanjo:jasmine@0.14.0');
   api.use('babrahams:transactions2');
   api.addFiles('tests/both/package-spec.js');
