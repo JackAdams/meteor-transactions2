@@ -1,7 +1,7 @@
 App Level Transactions for Meteor with Mongo
 --------------------------------------------
 
-This package is used to simulate transactions (at the application level) for Mongo. It is a more robust, production-ready version of the `babrahams:transactions` package.
+This package is used to simulate transactions (at the application level) for Mongo. It is a more robust, production-ready version of the `babrahams:transactions` package (with the same API).
 
 Although this package aims to improve the overall data integrity of your app, __do not__ use it to write banking applications or anything like that.
 
@@ -176,7 +176,7 @@ Note that each comment has to be removed independently. Transactions don't suppo
 
 #### In production
 
-We've been using the first iteration of this package (up to 0.6.x) [babrahams:transactions](https://atmospherejs.com/babrahams/transactions) in a complex production app for two years and it's never given us any trouble. That said, we have a fairly small user base and those users perform writes infrequently, so concurrent writes to the same document are unlikely. 0.7+ has not been so thoroughly battle-tested.
+We've been using the first iteration of this package (up to 0.6.x which is [babrahams:transactions](https://atmospherejs.com/babrahams/transactions)) in a complex production app for two years and it's never given us any trouble. That said, we have a fairly small user base and those users perform writes infrequently, so concurrent writes to the same document are unlikely. 0.7+ (`babrahams:transactions2`) has not been so thoroughly battle-tested.
 
 The production app is [Standbench](http://www.standbench.com), which provides online curriculum housing and management for schools.
 
