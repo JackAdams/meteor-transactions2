@@ -15,7 +15,7 @@ Package.onUse(function (api, where) {
   
   // Third party
   api.use('aldeed:collection2@2.3.3', ['client','server'], {weak:true});
-  api.use('dburles:mongo-collection-instances@0.3.3');
+  api.use('dburles:mongo-collection-instances@0.3.4');
   api.use('socialize:server-time@0.1.1');
 
   // Transactions2 package

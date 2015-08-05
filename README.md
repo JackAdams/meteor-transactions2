@@ -174,6 +174,18 @@ Note that each comment has to be removed independently. Transactions don't suppo
 
     Note: to try a repair from `meteor shell`, use `tx._repairAllIncomplete(mode)` or, for individual transactions, `tx._repairIncomplete(transactionDoc, mode)` (where mode is `"complete"` or `"rollback"` and `transactionDoc` is a document from the `tx.Transactions` collection.
 
+18. Monkey patching of the `Mongo.Collection` object is becoming a problem in Meteor and this package uses `dburles:mongo-collection-instances`, which monkey patches the `Mongo.Collection` object for developer convenience (but in doing so adds to the overall problem of interoperability). This means this package will not work well with other packages that do the same thing (there are many!).
+
+19. You may not want all collections to be available for transactions, in which case you can set `tx.collectionIndex` manually in a file that is common to client and server. E.g.
+
+```
+tx.collectionIndex = {
+  'posts' : Posts,
+  'comments' : Comments
+}
+```
+where `'posts'` is the name of the Mongo collection and `Posts` is the Meteor `Mongo.Collection` instance variable.
+
 #### In production
 
 We've been using the first iteration of this package (up to 0.6.x which is [babrahams:transactions](https://atmospherejs.com/babrahams/transactions)) in a complex production app for two years and it's never given us any trouble. That said, we have a fairly small user base and those users perform writes infrequently, so concurrent writes to the same document are unlikely. 0.7+ (`babrahams:transactions2`) has not been so thoroughly battle-tested.
